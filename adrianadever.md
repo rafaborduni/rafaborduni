@@ -124,7 +124,7 @@
             <h2>Meus Projetos</h2>
             <ul>
                 <li><a href="https://github.com/rafaborduni/rafaborduni/blob/main/deverdoweldes.md" target="_blank">Projeto 1</a></li>
-                <li><a href="https://github.com/joaosilva/projeto2" target="_blank">Projeto 2</a></li>
+                <li><a href="https://github.com/rafaborduni/rafaborduni/blob/main/adrianadever.md" target="_blank">Projeto 2</a></li>
         </section>
 
         <section class="habilidades">

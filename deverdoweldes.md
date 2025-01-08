@@ -1,183 +1,165 @@
-#include <stdio.h>
-#include <string.h>
-
-#define MAX_PRODUTOS 50
-#define MAX_CARRINHO 50
-
-// Estrutura para armazenar os produtos
-typedef struct {
-    int codigo;
-    char nome[30];
-    float preco;
-} Produto;
-
-// Estrutura para armazenar os produtos no carrinho
-typedef struct {
-    Produto produto;
-    int quantidade;
-} Carrinho;
-
-// Variáveis globais para os produtos e o carrinho
-Produto produtos[MAX_PRODUTOS];
-Carrinho carrinho[MAX_CARRINHO];
-int numProdutos = 0;
-int numCarrinho = 0;
-
-// Função para exibir o menu
-void menu() {
-    int opcao;
-    do {
-        printf("\nMenu:\n");
-        printf("1. Cadastrar Produto\n");
-        printf("2. Listar Produtos\n");
-        printf("3. Comprar Produto\n");
-        printf("4. Visualizar Carrinho\n");
-        printf("5. Fechar Pedido\n");
-        printf("6. Sair\n");
-        printf("Escolha uma opcao: ");
-        scanf("%d", &opcao);
-
-        switch(opcao) {
-            case 1:
-                cadastrarProduto();
-                break;
-            case 2:
-                listarProdutos();
-                break;
-            case 3:
-                comprarProduto();
-                break;
-            case 4:
-                visualizarCarrinho();
-                break;
-            case 5:
-                fecharPedido();
-                break;
-            case 6:
-                printf("Saindo...\n");
-                break;
-            default:
-                printf("Opcao invalida! Tente novamente.\n");
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Loja</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-    } while(opcao != 6);
-}
-
-// Função para cadastrar novos produtos
-void cadastrarProduto() {
-    if(numProdutos < MAX_PRODUTOS) {
-        Produto novoProduto;
-        printf("Codigo do produto: ");
-        scanf("%d", &novoProduto.codigo);
-        printf("Nome do produto: ");
-        scanf("%s", novoProduto.nome);
-        printf("Preco do produto: ");
-        scanf("%f", &novoProduto.preco);
-
-        produtos[numProdutos] = novoProduto;
-        numProdutos++;
-
-        printf("Produto cadastrado com sucesso!\n");
-    } else {
-        printf("Limite de produtos atingido!\n");
-    }
-}
-
-// Função para listar todos os produtos cadastrados
-void listarProdutos() {
-    if(numProdutos > 0) {
-        printf("\nLista de Produtos:\n");
-        for(int i = 0; i < numProdutos; i++) {
-            printf("Codigo: %d, Nome: %s, Preco: %.2f\n", produtos[i].codigo, produtos[i].nome, produtos[i].preco);
+        .container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            padding: 20px;
         }
-    } else {
-        printf("Nenhum produto cadastrado.\n");
-    }
-}
-
-// Função para pegar o índice de um produto pelo código
-int pegarProdutoPorCodigo(int codigo) {
-    for(int i = 0; i < numProdutos; i++) {
-        if(produtos[i].codigo == codigo) {
-            return i;
+        h1 {
+            text-align: center;
+            color: #333;
         }
-    }
-    return -1;  // Retorna -1 se o produto não for encontrado
-}
-
-// Função para verificar se um produto já está no carrinho
-int temNoCarrinho(int codigo) {
-    for(int i = 0; i < numCarrinho; i++) {
-        if(carrinho[i].produto.codigo == codigo) {
-            return i;
+        button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #007BFF;
+            color: #fff;
+            transition: background 0.3s ease;
         }
-    }
-    return -1;  // Retorna -1 se o produto não estiver no carrinho
-}
-
-// Função para adicionar um produto ao carrinho
-void comprarProduto() {
-    int codigo, quantidade;
-    printf("Digite o codigo do produto que deseja comprar: ");
-    scanf("%d", &codigo);
-
-    int indiceProduto = pegarProdutoPorCodigo(codigo);
-    if(indiceProduto == -1) {
-        printf("Produto nao encontrado.\n");
-        return;
-    }
-
-    printf("Digite a quantidade: ");
-    scanf("%d", &quantidade);
-
-    int indiceCarrinho = temNoCarrinho(codigo);
-    if(indiceCarrinho != -1) {
-        // Se o produto já estiver no carrinho, aumenta a quantidade
-        carrinho[indiceCarrinho].quantidade += quantidade;
-    } else {
-        // Se não estiver, adiciona ao carrinho
-        carrinho[numCarrinho].produto = produtos[indiceProduto];
-        carrinho[numCarrinho].quantidade = quantidade;
-        numCarrinho++;
-    }
-
-    printf("Produto adicionado ao carrinho.\n");
-}
-
-// Função para visualizar o carrinho
-void visualizarCarrinho() {
-    if(numCarrinho > 0) {
-        printf("\nCarrinho:\n");
-        for(int i = 0; i < numCarrinho; i++) {
-            printf("Codigo: %d, Nome: %s, Quantidade: %d, Preco Unitario: %.2f\n", 
-                    carrinho[i].produto.codigo, carrinho[i].produto.nome, 
-                    carrinho[i].quantidade, carrinho[i].produto.preco);
+        button:hover {
+            background: #0056b3;
         }
-    } else {
-        printf("Carrinho vazio.\n");
-    }
-}
-
-// Função para fechar o pedido e esvaziar o carrinho
-void fecharPedido() {
-    if(numCarrinho > 0) {
-        float total = 0;
-        printf("\nFatura:\n");
-        for(int i = 0; i < numCarrinho; i++) {
-            float subtotal = carrinho[i].quantidade * carrinho[i].produto.preco;
-            total += subtotal;
-            printf("Produto: %s, Quantidade: %d, Subtotal: %.2f\n", 
-                   carrinho[i].produto.nome, carrinho[i].quantidade, subtotal);
+        .output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background: #fafafa;
+            border-radius: 5px;
         }
-        printf("Valor total: %.2f\n", total);
-        numCarrinho = 0;  // Limpa o carrinho
-        printf("Pedido fechado com sucesso!\n");
-    } else {
-        printf("Carrinho vazio. Nao ha pedido para fechar.\n");
-    }
-}
+        .output ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .output li {
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Loja</h1>
+        <button onclick="cadastrarProduto()">Cadastrar Produto</button>
+        <button onclick="listarProdutos()">Listar Produtos</button>
+        <button onclick="comprarProduto()">Comprar Produto</button>
+        <button onclick="visualizarCarrinho()">Visualizar Carrinho</button>
+        <button onclick="fecharPedido()">Fechar Pedido</button>
+        <button onclick="sair()">Sair</button>
+        <div id="output" class="output"></div>
+    </div>
 
-// Função principal
-int main() {
-    menu();
-    return 0;
-}
+    <script>
+        let produtos = [];
+        let carrinho = [];
+
+        function cadastrarProduto() {
+            let codigo = prompt("Digite o código do produto:");
+            let nome = prompt("Digite o nome do produto:");
+            let preco = parseFloat(prompt("Digite o preço do produto:"));
+
+            if (codigo && nome && preco) {
+                produtos.push({ codigo, nome, preco });
+                exibirMensagem("Produto cadastrado com sucesso!");
+            } else {
+                exibirMensagem("Erro ao cadastrar o produto. Verifique os dados.");
+            }
+        }
+
+        function listarProdutos() {
+            if (produtos.length > 0) {
+                let lista = "<ul>";
+                produtos.forEach(produto => {
+                    lista += `<li>Código: ${produto.codigo}, Nome: ${produto.nome}, Preço: R$ ${produto.preco.toFixed(2)}</li>`;
+                });
+                lista += "</ul>";
+                exibirMensagem(lista);
+            } else {
+                exibirMensagem("Nenhum produto cadastrado.");
+            }
+        }
+
+        function comprarProduto() {
+            let codigo = prompt("Digite o código do produto que deseja comprar:");
+            let produto = produtos.find(p => p.codigo === codigo);
+
+            if (produto) {
+                let quantidade = parseInt(prompt("Digite a quantidade:"));
+                if (quantidade > 0) {
+                    let itemCarrinho = carrinho.find(c => c.codigo === codigo);
+                    if (itemCarrinho) {
+                        itemCarrinho.quantidade += quantidade;
+                    } else {
+                        carrinho.push({ ...produto, quantidade });
+                    }
+                    exibirMensagem("Produto adicionado ao carrinho.");
+                } else {
+                    exibirMensagem("Quantidade inválida.");
+                }
+            } else {
+                exibirMensagem("Produto não encontrado.");
+            }
+        }
+
+        function visualizarCarrinho() {
+            if (carrinho.length > 0) {
+                let lista = "<ul>";
+                carrinho.forEach(item => {
+                    lista += `<li>Código: ${item.codigo}, Nome: ${item.nome}, Quantidade: ${item.quantidade}, Preço Unitário: R$ ${item.preco.toFixed(2)}</li>`;
+                });
+                lista += "</ul>";
+                exibirMensagem(lista);
+            } else {
+                exibirMensagem("Carrinho vazio.");
+            }
+        }
+
+        function fecharPedido() {
+            if (carrinho.length > 0) {
+                let total = 0;
+                let fatura = "<ul>";
+                carrinho.forEach(item => {
+                    let subtotal = item.quantidade * item.preco;
+                    total += subtotal;
+                    fatura += `<li>Produto: ${item.nome}, Quantidade: ${item.quantidade}, Subtotal: R$ ${subtotal.toFixed(2)}</li>`;
+                });
+                fatura += `</ul><strong>Total: R$ ${total.toFixed(2)}</strong>`;
+                exibirMensagem(fatura);
+                carrinho = [];
+            } else {
+                exibirMensagem("Carrinho vazio. Não há pedido para fechar.");
+            }
+        }
+
+        function sair() {
+            exibirMensagem("Saindo do sistema...");
+        }
+
+        function exibirMensagem(mensagem) {
+            document.getElementById("output").innerHTML = mensagem;
+        }
+    </script>
+</body>
+</html>
